@@ -9,8 +9,8 @@ import {
 const router = Router();
 
 router.get("", findCampaigns);
-router.get("/:id", getCampaign);
 router.post("", createCampaign);
+router.get("/:id", getCampaign);
 router.patch("/:id", updateCampaign);
 
 export const campaignRoutes = router;
