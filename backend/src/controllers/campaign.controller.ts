@@ -10,6 +10,21 @@ export async function findCampaigns(
   res.json(campaigns);
 }
 
+export async function createCampaign(req: Request, res: Response) {
+  const { name, slug, status, regulationDescription } = req.body;
+
+  const campaign = await prisma.campaign.create({
+    data: {
+      name,
+      slug,
+      status,
+      regulationDescription,
+    },
+  });
+
+  return res.status(201).json(campaign);
+}
+
 export async function getCampaign(req: Request, res: Response) {
   const { id } = req.params;
 
