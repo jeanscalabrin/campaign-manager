@@ -65,7 +65,7 @@ export default function CampaignList({ campaigns = [] }: CampaignListParams) {
                     {campaign.instructionFileUrl && (
                       <Button variant="ghost" size="sm" asChild>
                         <a
-                          href={`${process.env.NEXT_PUBLIC_API_URL}${campaign.regulationFileUrl}`}
+                          href={`${process.env.NEXT_PUBLIC_API_URL}${campaign.instructionFileUrl}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
