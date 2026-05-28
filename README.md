@@ -10,6 +10,7 @@ Sistema administrativo para gerenciamento de campanhas promocionais.
 - Prisma ORM
 - PostgreSQL
 - Multer (upload de arquivos)
+- Zod (validação de parâmetros)
 
 **Frontend**
 - Next.js 15 (App Router)
