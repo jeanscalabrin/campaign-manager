@@ -34,8 +34,14 @@ export async function getCampaign(req: Request, res: Response) {
 export async function updateCampaign(req: Request, res: Response) {
   const { id } = req.params;
 
+  if (!id) {
+    return res.status(400).json({
+      message: "id is required",
+    });
+  }
+
   const campaign = await prisma.campaign.update({
-    where: { id },
+    where: { id: id as string },
     data: req.body,
   });
 
