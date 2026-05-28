@@ -36,6 +36,9 @@ docker compose up -d
 # Rodar migrations
 npx prisma migrate dev
 
+#Rodar os generates
+npx prisma generate
+
 # Rodar seed
 npx prisma db seed
 
