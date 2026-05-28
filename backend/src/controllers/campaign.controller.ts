@@ -5,8 +5,8 @@ import z from "zod";
 import { Prisma } from "../../generated/prisma/client";
 
 const createCampaignSchema = z.object({
-  name: z.string().min(3),
-  slug: z.string().min(3),
+  name: z.string().min(3).max(100),
+  slug: z.string().min(3).max(100),
   regulationDescription: z.string().min(3).max(3000),
   status: z.enum(["DRAFT", "ACTIVE", "PAUSED"]),
 });
@@ -69,6 +69,7 @@ export async function getCampaign(req: Request, res: Response) {
 export async function updateCampaign(req: Request, res: Response) {
   const { id } = req.params;
   const data: Prisma.CampaignUpdateInput = updateCampaignSchema.parse(req.body);
+  console.log(data);
 
   if (!id) {
     return res.status(400).json({
@@ -84,6 +85,7 @@ export async function updateCampaign(req: Request, res: Response) {
 
     return res.json(campaign);
   } catch (error) {
+    console.log("aqui");
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"

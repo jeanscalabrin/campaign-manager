@@ -14,10 +14,10 @@ datasource db {
 
 model Campaign {
   id                    String         @id @default(uuid())
-  name                  String
-  slug                  String         @unique
+  name                  String         @db.VarChar(100)
+  slug                  String         @unique @db.VarChar(50)
   status                CampaignStatus @default(DRAFT)
-  regulationDescription String?
+  regulationDescription String         @db.VarChar(3000)
   regulationFileUrl     String?
   instructionFileUrl    String?
 
