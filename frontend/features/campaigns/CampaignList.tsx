@@ -1,23 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Campaign, CampaignStatus } from "@/types/campaign";
+import { Campaign } from "@/types/campaign";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
-const statusConfig: Record<
-  CampaignStatus,
-  {
-    label: string;
-    variant: "default" | "secondary" | "destructive" | "outline";
-  }
-> = {
-  DRAFT: { label: "Rascunho", variant: "secondary" },
-  ACTIVE: { label: "Ativa", variant: "default" },
-  PAUSED: { label: "Pausada", variant: "outline" },
-  FINISHED: { label: "Encerrada", variant: "destructive" },
-};
+import { statusConfig } from "./constants";
 
 type CampaignListParams = {
   campaigns: Campaign[];

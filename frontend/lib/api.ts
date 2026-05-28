@@ -16,7 +16,9 @@ export async function fetchCampaign(id: string): Promise<Campaign> {
 
 export async function updateCampaign(
   id: string,
-  data: Partial<Pick<Campaign, "name" | "regulationDescription">>,
+  data: Partial<
+    Pick<Campaign, "name" | "slug" | "regulationDescription" | "status">
+  >,
 ): Promise<Campaign> {
   const res = await fetch(`${API_URL}/campaigns/${id}`, {
     method: "PATCH",
