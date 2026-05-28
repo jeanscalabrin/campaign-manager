@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { statusConfig } from "./constants";
+import { DownloadIcon, EyeIcon, File } from "lucide-react";
 
 type CampaignListParams = {
   campaigns: Campaign[];
@@ -47,9 +48,22 @@ export default function CampaignList({ campaigns = [] }: CampaignListParams) {
                       {campaign.regulationDescription}
                     </p>
                   </div>
-                  <Button asChild size="sm" className="shrink-0">
-                    <Link href={`/campaigns/${campaign.id}`}>Gerenciar</Link>
-                  </Button>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {campaign.regulationFileUrl && (
+                      <Button variant="ghost" size="sm" asChild>
+                        <a
+                          href={`${process.env.NEXT_PUBLIC_API_URL}${campaign.regulationFileUrl}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <File className="size-4" />
+                        </a>
+                      </Button>
+                    )}
+                    <Button asChild size="sm">
+                      <Link href={`/campaigns/${campaign.id}`}>Gerenciar</Link>
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             );

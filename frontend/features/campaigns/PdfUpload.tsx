@@ -6,6 +6,7 @@ import { uploadRegulationPdf } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import { EyeIcon, File } from "lucide-react";
 
 type Props = {
   campaign: Campaign;
@@ -50,16 +51,16 @@ export function PdfUpload({ campaign, onUpdate }: Props) {
       <Card className="border-dashed">
         <CardContent className="flex flex-col items-center justify-center gap-3 py-6">
           {campaign.regulationFileUrl ? (
-            <p className="text-sm text-muted-foreground">
+            <Button variant="ghost" size="sm" asChild>
               <a
                 href={`${process.env.NEXT_PUBLIC_API_URL}${campaign.regulationFileUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary underline underline-offset-4"
               >
-                abrir PDF
+                <File className="size-4" />
+                Abrir PDF
               </a>
-            </p>
+            </Button>
           ) : (
             <p className="text-sm text-muted-foreground">
               Nenhum arquivo enviado
