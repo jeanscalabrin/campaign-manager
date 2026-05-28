@@ -85,7 +85,6 @@ export async function updateCampaign(req: Request, res: Response) {
 
     return res.json(campaign);
   } catch (error) {
-    console.log("aqui");
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
@@ -95,4 +94,21 @@ export async function updateCampaign(req: Request, res: Response) {
       });
     }
   }
+}
+
+export async function uploadRegulationPdf(req: Request, res: Response) {
+  const { id } = req.params;
+
+  if (!req.file) {
+    return res.status(400).json({ error: "File not found" });
+  }
+
+  const regulationFileUrl = `/uploads/${req.file.filename}`;
+
+  const campaign = await prisma.campaign.update({
+    where: { id: id as string },
+    data: { regulationFileUrl },
+  });
+
+  return res.json(campaign);
 }
