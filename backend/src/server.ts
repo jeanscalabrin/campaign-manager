@@ -12,6 +12,6 @@ app.use("/campaigns", campaignRoutes);
 app.use(errorHandler);
 app.use("/uploads", express.static(path.resolve("uploads")));
 
-app.listen(3000, () => {
-  console.log("API running on 3000");
+app.listen(21167, () => {
+  console.log("API running on 21167");
 });
