@@ -1,97 +1,146 @@
 "use client";
-
 import { useRef, useState } from "react";
 import { Campaign } from "@/types/campaign";
-import { uploadRegulationPdf } from "@/lib/api";
+import { uploadRegulationPdf, uploadInstructionPdf } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { EyeIcon, File } from "lucide-react";
+import { File } from "lucide-react";
 
 type Props = {
   campaign: Campaign;
   onUpdate: (updated: Campaign) => void;
 };
 
-export function PdfUpload({ campaign, onUpdate }: Props) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+type UploadState = {
+  loading: boolean;
+  success: boolean;
+  error: string | null;
+};
 
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+const initialState: UploadState = {
+  loading: false,
+  success: false,
+  error: null,
+};
+
+export function PdfUpload({ campaign, onUpdate }: Props) {
+  const regulationRef = useRef<HTMLInputElement>(null);
+  const instructionRef = useRef<HTMLInputElement>(null);
+  const [regulationState, setRegulationState] =
+    useState<UploadState>(initialState);
+  const [instructionState, setInstructionState] =
+    useState<UploadState>(initialState);
+
+  async function handleUpload(
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "regulation" | "instruction",
+  ) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const setState =
+      type === "regulation" ? setRegulationState : setInstructionState;
+    const ref = type === "regulation" ? regulationRef : instructionRef;
+
     if (file.type !== "application/pdf") {
-      setError("Apenas arquivos PDF são aceitos");
+      setState({
+        loading: false,
+        success: false,
+        error: "Apenas arquivos PDF são aceitos",
+      });
       return;
     }
 
-    setLoading(true);
-    setSuccess(false);
-    setError(null);
+    setState({ loading: true, success: false, error: null });
 
     try {
-      const updated = await uploadRegulationPdf(campaign.id, file);
+      const updated =
+        type === "regulation"
+          ? await uploadRegulationPdf(campaign.id, file)
+          : await uploadInstructionPdf(campaign.id, file);
       onUpdate(updated);
-      setSuccess(true);
+      setState({ loading: false, success: true, error: null });
     } catch (err: any) {
-      setError(err.message);
+      setState({ loading: false, success: false, error: err.message });
     } finally {
-      setLoading(false);
-      if (inputRef.current) inputRef.current.value = "";
+      if (ref.current) ref.current.value = "";
     }
   }
 
-  return (
-    <div className="flex flex-col gap-3">
-      <Label>PDF de regulamento</Label>
-
-      <Card className="border-dashed">
-        <CardContent className="flex flex-col items-center justify-center gap-3 py-6">
-          {campaign.regulationFileUrl ? (
-            <Button variant="ghost" size="sm" asChild>
-              <a
-                href={`${process.env.NEXT_PUBLIC_API_URL}${campaign.regulationFileUrl}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <File className="size-4" />
-                Abrir PDF
-              </a>
+  function renderPdfField(
+    label: string,
+    fileUrl: string | null,
+    state: UploadState,
+    ref: React.RefObject<HTMLInputElement>,
+    type: "regulation" | "instruction",
+  ) {
+    return (
+      <div className="flex flex-col gap-3">
+        <Label>{label}</Label>
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center gap-3 py-6">
+            {fileUrl ? (
+              <Button variant="ghost" size="sm" asChild>
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_URL}${fileUrl}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <File className="size-4" />
+                  Abrir PDF
+                </a>
+              </Button>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Nenhum arquivo enviado
+              </p>
+            )}
+            <input
+              ref={ref}
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => handleUpload(e, type)}
+              className="hidden"
+            />
+            <Button
+              variant="outline"
+              disabled={state.loading}
+              onClick={() => ref.current?.click()}
+            >
+              {state.loading
+                ? "Enviando..."
+                : fileUrl
+                  ? "Substituir PDF"
+                  : "Enviar PDF"}
             </Button>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Nenhum arquivo enviado
-            </p>
-          )}
+          </CardContent>
+        </Card>
+        {state.error && (
+          <p className="text-sm text-destructive">{state.error}</p>
+        )}
+        {state.success && (
+          <p className="text-sm text-green-600">PDF enviado com sucesso!</p>
+        )}
+      </div>
+    );
+  }
 
-          <input
-            ref={inputRef}
-            type="file"
-            accept="application/pdf"
-            onChange={handleUpload}
-            className="hidden"
-          />
-
-          <Button
-            variant="outline"
-            disabled={loading}
-            onClick={() => inputRef.current?.click()}
-          >
-            {loading
-              ? "Enviando..."
-              : campaign.regulationFileUrl
-                ? "Substituir PDF"
-                : "Enviar PDF"}
-          </Button>
-        </CardContent>
-      </Card>
-
-      {error && <p className="text-sm text-destructive">{error}</p>}
-      {success && (
-        <p className="text-sm text-green-600">PDF enviado com sucesso!</p>
+  return (
+    <div className="flex flex-col gap-6">
+      {renderPdfField(
+        "PDF de regulamento",
+        campaign.regulationFileUrl,
+        regulationState,
+        regulationRef,
+        "regulation",
+      )}
+      {renderPdfField(
+        "PDF de instruções",
+        campaign.instructionFileUrl,
+        instructionState,
+        instructionRef,
+        "instruction",
       )}
     </div>
   );

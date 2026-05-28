@@ -57,6 +57,20 @@ export default function CampaignList({ campaigns = [] }: CampaignListParams) {
                           rel="noopener noreferrer"
                         >
                           <File className="size-4" />
+                          Regulação PDF
+                        </a>
+                      </Button>
+                    )}
+
+                    {campaign.instructionFileUrl && (
+                      <Button variant="ghost" size="sm" asChild>
+                        <a
+                          href={`${process.env.NEXT_PUBLIC_API_URL}${campaign.regulationFileUrl}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <File className="size-4" />
+                          Instrução PDF
                         </a>
                       </Button>
                     )}

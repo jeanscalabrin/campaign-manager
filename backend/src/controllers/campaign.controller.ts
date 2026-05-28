@@ -114,3 +114,20 @@ export async function uploadRegulationPdf(req: Request, res: Response) {
 
   return res.json(campaign);
 }
+
+export async function uploadInstructionPdf(req: Request, res: Response) {
+  const { id } = req.params;
+
+  if (!req.file) {
+    return res.status(400).json({ error: "File not found" });
+  }
+
+  const instructionFileUrl = `/uploads/${req.file.filename}`;
+
+  const campaign = await prisma.campaign.update({
+    where: { id: id as string },
+    data: { instructionFileUrl },
+  });
+
+  return res.json(campaign);
+}

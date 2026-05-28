@@ -15,7 +15,14 @@ export async function fetchCampaign(id: string): Promise<Campaign> {
 }
 
 export async function createCampaign(
-  data: Pick<Campaign, "name" | "slug" | "regulationDescription" | "status">,
+  data: Pick<
+    Campaign,
+    | "name"
+    | "slug"
+    | "regulationDescription"
+    | "regulationDescription"
+    | "status"
+  >,
 ): Promise<Campaign> {
   const res = await fetch(`${API_URL}/campaigns`, {
     method: "POST",
@@ -29,7 +36,14 @@ export async function createCampaign(
 export async function updateCampaign(
   id: string,
   data: Partial<
-    Pick<Campaign, "name" | "slug" | "regulationDescription" | "status">
+    Pick<
+      Campaign,
+      | "name"
+      | "slug"
+      | "regulationDescription"
+      | "instructionFileUrl"
+      | "status"
+    >
   >,
 ): Promise<Campaign> {
   const res = await fetch(`${API_URL}/campaigns/${id}`, {
@@ -48,6 +62,20 @@ export async function uploadRegulationPdf(
   const formData = new FormData();
   formData.append("file", file);
   const res = await fetch(`${API_URL}/campaigns/${id}/regulation-pdf`, {
+    method: "PATCH",
+    body: formData,
+  });
+  if (!res.ok) throw new Error("Erro ao fazer upload do PDF");
+  return res.json();
+}
+
+export async function uploadInstructionPdf(
+  id: string,
+  file: File,
+): Promise<Campaign> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetch(`${API_URL}/campaigns/${id}/instruction-pdf`, {
     method: "PATCH",
     body: formData,
   });
