@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function CampaignNewPage() {
   return (
-    <main className="max-w-3xl mx-auto px-4 py-10 flex flex-col gap-6">
+    <main className="w-full max-w-3xl mx-auto px-4 py-10 flex flex-col gap-6">
       <div className="flex items-center gap-4">
         <Button variant="outline" size="sm" asChild>
           <Link href="/">← Voltar</Link>
