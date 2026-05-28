@@ -5,6 +5,7 @@ import { Campaign } from "@/types/campaign";
 import Link from "next/link";
 import { statusConfig } from "./constants";
 import { CampaignForm } from "./CampaignForm";
+import { PdfUpload } from "./PdfUpload";
 
 type CampaignDetailParams = {
   campaign: Campaign;
@@ -63,7 +64,7 @@ export function CampaignDetail({
           <CardTitle className="text-base">Documentos</CardTitle>
         </CardHeader>
         <CardContent>
-          {/*<PdfUpload campaign={campaign} onUpdate={setCampaign} />*/}
+          <PdfUpload campaign={campaign} onUpdate={setCampaign} />
         </CardContent>
       </Card>
     </main>

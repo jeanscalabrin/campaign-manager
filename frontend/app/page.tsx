@@ -1,26 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { fetchCampaigns } from "@/lib/api";
-import { Campaign, CampaignStatus } from "@/types/campaign";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Campaign } from "@/types/campaign";
 import CampaignList from "@/features/campaigns/CampaignList";
-
-const statusConfig: Record<
-  CampaignStatus,
-  {
-    label: string;
-    variant: "default" | "secondary" | "destructive" | "outline";
-  }
-> = {
-  DRAFT: { label: "Rascunho", variant: "secondary" },
-  ACTIVE: { label: "Ativa", variant: "default" },
-  PAUSED: { label: "Pausada", variant: "outline" },
-  FINISHED: { label: "Encerrada", variant: "destructive" },
-};
 
 export default function CampaignPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);

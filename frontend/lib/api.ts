@@ -1,6 +1,6 @@
 import { Campaign } from "@/types/campaign";
 
-const API_URL = "http://localhost:21167";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function fetchCampaigns(): Promise<Campaign[]> {
   const res = await fetch(`${API_URL}/campaigns`);
@@ -11,6 +11,18 @@ export async function fetchCampaigns(): Promise<Campaign[]> {
 export async function fetchCampaign(id: string): Promise<Campaign> {
   const res = await fetch(`${API_URL}/campaigns/${id}`);
   if (!res.ok) throw new Error("Erro ao carregar campanha");
+  return res.json();
+}
+
+export async function createCampaign(
+  data: Pick<Campaign, "name" | "slug" | "regulationDescription" | "status">,
+): Promise<Campaign> {
+  const res = await fetch(`${API_URL}/campaigns`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Erro ao criar/atualizar campanha");
   return res.json();
 }
 
@@ -25,7 +37,7 @@ export async function updateCampaign(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Erro ao atualizar campanha");
+  if (!res.ok) throw new Error("Erro ao criar/atualizar campanha");
   return res.json();
 }
 

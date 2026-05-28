@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Campaign, CampaignStatus } from "@/types/campaign";
-import { updateCampaign } from "@/lib/api";
+import { createCampaign, updateCampaign } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -15,37 +15,55 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { statusConfig } from "./constants";
+import { useRouter } from "next/navigation";
 
 type Props = {
-  campaign: Campaign;
-  onUpdate: (updated: Campaign) => void;
+  campaign?: Campaign;
+  onUpdate?: (updated: Campaign) => void;
 };
 
 export function CampaignForm({ campaign, onUpdate }: Props) {
-  const [name, setName] = useState(campaign.name);
-  const [slug, setSlug] = useState(campaign.slug);
+  const [name, setName] = useState(campaign?.name ?? "");
+  const [slug, setSlug] = useState(campaign?.slug ?? "");
   const [description, setDescription] = useState(
-    campaign.regulationDescription,
+    campaign?.regulationDescription ?? "",
   );
-  const [status, setStatus] = useState<CampaignStatus>(campaign.status);
+  const [status, setStatus] = useState<CampaignStatus>(
+    campaign?.status ?? "DRAFT",
+  );
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   async function handleSubmit() {
     setLoading(true);
     setSuccess(false);
     setError(null);
     try {
-      const updated = await updateCampaign(campaign.id, {
-        name,
-        slug,
-        regulationDescription: description,
-        status,
-      });
-      onUpdate(updated);
+      const updated = campaign
+        ? await updateCampaign(campaign.id, {
+            name,
+            slug,
+            regulationDescription: description,
+            status,
+          })
+        : await createCampaign({
+            name,
+            slug,
+            regulationDescription: description,
+            status,
+          });
+
+      if (campaign && onUpdate) {
+        onUpdate(updated);
+      } else {
+        router.push(`/campaigns/${updated.id}`);
+      }
       setSuccess(true);
     } catch (err: any) {
+      console.log(error);
       setError(err.message);
     } finally {
       setLoading(false);

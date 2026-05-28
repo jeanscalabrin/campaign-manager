@@ -14,7 +14,12 @@ type CampaignListParams = {
 export default function CampaignList({ campaigns = [] }: CampaignListParams) {
   return (
     <main className="max-w-4xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-bold mb-6">Campanhas</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">Campanhas</h1>
+        <Button asChild size="sm">
+          <Link href="/campaigns/new">Nova campanha</Link>
+        </Button>
+      </div>
 
       {campaigns.length === 0 ? (
         <p className="text-muted-foreground">Nenhuma campanha encontrada.</p>
