@@ -41,7 +41,9 @@ export async function createCampaign(req: Request, res: Response) {
 }
 
 export async function findCampaigns(req: Request, res: Response) {
-  const campaigns: Campaign[] = await prisma.campaign.findMany();
+  const campaigns: Campaign[] = await prisma.campaign.findMany({
+    orderBy: { updatedAt: "desc" },
+  });
   res.json(campaigns);
 }
 
